@@ -8,7 +8,7 @@ const dateOptions = { timeZone: 'Europe/Paris' };
 const fullDate = new Intl.DateTimeFormat('fr-FR', {...dateOptions, day:'numeric', month:'long',year:'numeric'}).format(target);
 const time = new Intl.DateTimeFormat('fr-FR', {...dateOptions, hour:'2-digit',minute:'2-digit'}).format(target);
 text('.event-date', `${fullDate} · ${time}`);
-text('.nav-date', `${new Intl.DateTimeFormat('fr-FR', {...dateOptions, day:'numeric',month:'short'}).format(target)} · ${time}`);
+
 text('#closing-date', `${fullDate} · ${time} · Heure de Paris`);
 function tick(){
  const remaining = Math.max(0, target.getTime() - Date.now());
