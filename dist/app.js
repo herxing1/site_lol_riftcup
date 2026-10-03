@@ -51,6 +51,23 @@ document.querySelectorAll('.team-poster').forEach(button=>{
   button.querySelector('span').textContent='Affiche indisponible';
  });
 });
-const rounds=config.rounds.length?config.rounds:[{name:'Rencontres à annoncer',matches:[{a:'Équipe à annoncer',b:'Équipe à annoncer'},{a:'Équipe à annoncer',b:'Équipe à annoncer'}]},{name:'Tour suivant',matches:[{a:'À déterminer',b:'À déterminer'}]},{name:'Victoire',matches:[{a:'Champion à venir'}]}];
-if(config.rounds.length) text('#bracket-intro','Retrouvez les rencontres et les résultats de la RIFT CUP.');
-document.querySelector('#bracket').innerHTML=rounds.map((round,i)=>`<div class="round"><h3>${esc(round.name)}</h3><div class="matches">${round.matches.map((m,j)=>`<article class="match ${i===rounds.length-1?'champion':''}"><div class="match-label">${config.rounds.length?`RENCONTRE ${j+1}`:'À VENIR'}</div><div class="competitor"><span>${esc(m.a)}</span><b>${esc(m.scoreA??'—')}</b></div>${m.b?`<div class="competitor"><span>${esc(m.b)}</span><b>${esc(m.scoreB??'—')}</b></div>`:''}</article>`).join('')}</div></div>`).join('');
+
+document.querySelectorAll('.registration-link').forEach(link=>{ if(config.registrationUrl) link.href=config.registrationUrl; });
+const isExample = !config.rounds.length;
+const rounds = isExample ? [
+ {name:'Demi-finales', matches:[{id:'M1',a:'Équipe A',b:'Équipe B'},{id:'M2',a:'Équipe C',b:'Équipe D'}]},
+ {name:'Finale',matches:[{id:'M3',a:'Vainqueur du match 1',b:'Vainqueur du match 2'}]}
+] : config.rounds;
+text('#bracket-intro',isExample?'Tirage à venir. Voici un exemple à 4 équipes pour comprendre le parcours ; l’arbre définitif dépendra des inscriptions.':'Un seul match à gagner pour avancer. Retrouvez le parcours et les résultats de chaque équipe.');
+let matchNumber=0;
+const numbered=rounds.map(round=>({...round,matches:round.matches.map(m=>({...m,number:++matchNumber}))}));
+document.querySelector('#bracket').innerHTML=(isExample?'<p class="example-label">EXEMPLE DE PARCOURS · TIRAGE NON EFFECTUÉ</p>':'')+numbered.map((round,i)=>{
+ const matches=round.matches.map((m,j)=>{
+  const next=numbered[i+1]?.matches[Math.floor(j/2)];
+  const destination=m.nextLabel || (next?'Le vainqueur rejoint le match '+next.number:'Le vainqueur remporte la RIFT CUP');
+  const done=(m.scoreA===1&&m.scoreB===0)||(m.scoreA===0&&m.scoreB===1);
+  const row=(name,score,won)=>'<div class="competitor '+(done?(won?'winner':'loser'):'')+'"><span>'+esc(name)+(done?'<small>'+(won?'Victoire':'Éliminée')+'</small>':'')+'</span><b>'+esc(score??'—')+'</b></div>';
+  return '<article class="match '+(i===numbered.length-1?'champion':'')+'"><div class="match-label"><strong>MATCH '+m.number+'</strong><span>'+(done?'TERMINÉ':'1 PARTIE')+'</span></div>'+row(m.a,m.scoreA,m.scoreA===1)+row(m.b||'À déterminer',m.scoreB,m.scoreB===1)+'<p class="match-destination">'+esc(destination)+'</p></article>';
+ }).join('');
+ return '<div class="round"><h3><span class="round-step">'+(i+1)+'</span>'+esc(round.name)+'</h3><div class="matches">'+matches+'</div></div>';
+}).join('')+'<p class="bracket-finish">Vainqueur de la finale <strong>Champion de la RIFT CUP</strong></p>';
