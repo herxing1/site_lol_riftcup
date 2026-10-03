@@ -8,7 +8,7 @@ window.RIFT_CONFIG = {
   teams: [],
   // Exemple d’équipe : { name: 'Les Poro', tag: 'POR', poster: 'assets/equipes/les-poro.jpg', players: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'] }
   // Affiche facultative : mettre l’image dans assets/equipes/, puis son chemin dans poster.
-  // Une URL https:// vers une image est également acceptée. Sans poster, le personnage reste affiché.
+  // Une URL https:// vers une image est également acceptée. Sans poster, le paysage reste affiché.
   // Ajoutez les tours et les matchs quand le format du tournoi est confirmé.
   // Exemple : { name: 'Demi-finales', matches: [{ a: 'Les Poro', b: 'Les Drakes', scoreA: 1, scoreB: 0 }] }
   rounds: [],

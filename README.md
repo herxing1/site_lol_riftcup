@@ -18,7 +18,7 @@ teams: [
 ],
 ```
 
-Une adresse HTTPS directe vers une image fonctionne aussi. L'affiche est affichée en entier, sans recadrage, et peut être agrandie en cliquant dessus. Fermez-la avec le bouton Fermer ou la touche Échap. Si `poster` est vide ou absent, le personnage est conservé. Si l'image ne charge pas, la carte indique « Affiche indisponible ».
+Une adresse HTTPS directe vers une image fonctionne aussi. L'affiche est affichée en entier, sans recadrage, et peut être agrandie en cliquant dessus. Fermez-la avec le bouton Fermer ou la touche Échap. Si `poster` est vide ou absent, le paysage est conservé. Si l'image ne charge pas, la carte indique « Affiche indisponible ».
 
 Republiez le site après modification. Il n'y a pas d'import d'image depuis la page publique : vous pouvez transmettre les affiches dans le chat pour les faire intégrer et publier.
 
