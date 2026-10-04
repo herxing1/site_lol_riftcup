@@ -31,3 +31,6 @@ La date est fixée au 24 octobre 2026 à 20 h, heure de Paris. Conserver un fuse
 Les équipes et les tours affichés en l'absence de données sont des emplacements d'attente, pas un format officiel de tournoi. Remplir `rounds` avec le véritable format quand il est connu.
 
 Les styles sont dans `dist/style.css`, la structure dans `dist/index.html`. Aucun outil de compilation n'est nécessaire. Les images fournies sont dans `dist/assets`. Pour un hébergement classique, publier le contenu de `dist`.
+
+### Simulation du grand arbre
+Quand `rounds` est vide, le site affiche une simulation de 20 équipes (10 par côté), avec 4 barrages puis huitièmes, quarts, demi-finales et finale. Ce ne sont pas des inscriptions réelles. Renseigner `rounds` remplace la simulation. Pour les tours avec exemptions, utiliser un `id` par match et `nextId` pour indiquer le match suivant.
