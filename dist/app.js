@@ -62,33 +62,38 @@ text('#bracket-intro',isExample?'Tirage à venir. Voici un exemple à 4 équipes
 let matchNumber=0;
 const numbered=rounds.map(round=>({...round,matches:round.matches.map(m=>({...m,number:++matchNumber}))}));
 
-const trophy = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M7 3h10v6a5 5 0 0 1-10 0V3Z M7 5H3v2a5 5 0 0 0 5 5 M17 5h4v2a5 5 0 0 1-5 5 M12 14v5 M8 21h8 M9 19h6"/></svg>';
+
 const board=document.querySelector('#bracket');
-board.innerHTML='<div class="bracket-topline"><span>'+ (isExample?'APERÇU DU PARCOURS':'TABLEAU DU TOURNOI')+'</span><span class="bracket-state">'+(isExample?'Tirage à venir':'Résultats & qualifications')+'</span></div><div class="bracket-board"><svg class="bracket-lines" aria-hidden="true"></svg><div class="bracket-lanes">'+numbered.map((round,i)=>{
- const final=i===numbered.length-1;
- const matches=round.matches.map((m,j)=>{
-  const next=numbered[i+1]?.matches[Math.floor(j/2)];
-  const done=(m.scoreA===1&&m.scoreB===0)||(m.scoreA===0&&m.scoreB===1);
-  const row=(name,score,won,slot)=>{
-   const initial=/^Équipe [A-Z]$/.test(name)?name.slice(-1):name.startsWith('Vainqueur')?'?':name.slice(0,2).toUpperCase();
-   return '<div class="competitor '+(done?(won?'winner':'loser'):'')+'"><span class="team-emblem" aria-hidden="true">'+esc(initial)+'</span><span class="competitor-name">'+esc(name)+(done?'<small>'+(won?'Qualifiée':'Éliminée')+'</small>':'')+'</span><b class="match-score">'+esc(score??'—')+'</b></div>';
-  };
-  return '<article tabindex="-1" id="match-'+m.number+'" class="match '+(final?'champion':'')+'" '+(next?'data-next="match-'+next.number+'"':'')+'><div class="match-label"><strong><span class="match-index">'+String(m.number).padStart(2,'0')+'</span> '+(final?'FINALE':'MATCH '+m.number)+'</strong><span>'+(done?'TERMINÉ':'À VENIR')+'</span></div>'+row(m.a,m.scoreA,m.scoreA===1,0)+row(m.b||'À déterminer',m.scoreB,m.scoreB===1,1)+'<div class="match-destination">'+(next?'<span>Qualification</span><a href="#match-'+next.number+'">'+esc(m.nextLabel||('Match '+next.number))+'</a>':'<span>Le vainqueur remporte</span><strong>LA RIFT CUP</strong>')+'</div></article>';
- }).join('');
- return '<section class="round '+(final?'final-round':'')+'" aria-label="'+esc(round.name)+'"><h3><span class="round-step">'+String(i+1).padStart(2,'0')+'</span><span>'+esc(round.name)+'<small>'+round.matches.length+' '+(round.matches.length>1?'rencontres':'rencontre')+' · BO1</small></span></h3><div class="matches">'+matches+'</div></section>';
-}).join('')+'</div></div><div class="bracket-finish">'+trophy+'<div><span>Au bout du parcours</span><strong>Une équipe. La RIFT CUP.</strong></div></div>'+(isExample?'<p class="example-label">Exemple à 4 équipes. Le tableau définitif sera établi après les inscriptions.</p>':'');
+const terminal=numbered.length-1;
+function arenaMatch(m,roundIndex,index,side){
+ const final=roundIndex===terminal;
+ const next=numbered[roundIndex+1]?.matches[Math.floor(index/2)];
+ const done=(m.scoreA===1&&m.scoreB===0)||(m.scoreA===0&&m.scoreB===1);
+ const participant=(name,score)=>'<div class="arena-team '+(done?(score===1?'won':'lost'):'')+'"><span>'+esc(name||'À déterminer')+'</span><b>'+esc(score??'—')+'</b></div>';
+ if(final){
+  const winner=done?(m.scoreA===1?m.a:m.b):'';
+  return '<article id="match-'+m.number+'" tabindex="-1" class="arena-final arena-match"><p class="arena-kicker">MATCH '+String(m.number).padStart(2,'0')+' / '+(done?'TERMINÉ':'BO1')+'</p><h3>La finale</h3><div class="final-duel">'+participant(m.a,m.scoreA)+'<span class="duel-vs" aria-hidden="true">VS</span>'+participant(m.b,m.scoreB)+'</div><p class="final-reward">'+(winner?'<span>CHAMPION</span><strong>'+esc(winner)+'</strong>':'<span>UNE VICTOIRE POUR</span><strong>LA RIFT CUP</strong>')+'</p></article>';
+ }
+ return '<article id="match-'+m.number+'" tabindex="-1" class="arena-match arena-qualifier" data-next="'+(next?'match-'+next.number:'')+'" data-side="'+side+'"><header><span>Match '+String(m.number).padStart(2,'0')+'</span><small>'+(done?'TERMINÉ':'BO1 · À VENIR')+'</small></header><div class="arena-pair">'+participant(m.a,m.scoreA)+participant(m.b,m.scoreB)+'</div>'+(next?'<a class="arena-route" href="#match-'+next.number+'">'+esc(m.nextLabel||(roundIndex+1===terminal?'Accès à la finale':'Vainqueur au match '+next.number))+'</a>':'')+'</article>';
+}
+function lane(round,index,side){
+ const split=Math.ceil(round.matches.length/2);
+ const subset=side==='left'?round.matches.slice(0,split):round.matches.slice(split);
+ if(!subset.length)return '';
+ const markup=subset.map((m,j)=>arenaMatch(m,index,side==='left'?j:j+split,side)).join('');
+ return '<section class="arena-lane '+side+'" style="--mobile-order:'+(index*2+(side==='left'?0:1))+'"><h3>'+esc(round.name)+'</h3><div class="arena-lane-matches">'+markup+'</div></section>';
+}
+const before=numbered.slice(0,-1);
+board.innerHTML='<div class="arena-status"><span>'+ (isExample?'TIRAGE À VENIR':'LE TABLEAU')+'</span><span>ÉLIMINATION DIRECTE / BO1</span></div><div class="arena-scroll"><div class="arena-stage" style="--lane-count:'+Math.max(1,numbered.length*2-1)+'"><svg class="arena-wires" aria-hidden="true"></svg>'+before.map((r,i)=>lane(r,i,'left')).join('')+'<section class="arena-center" style="--mobile-order:'+(terminal*2)+'">'+numbered[terminal].matches.map((m,j)=>arenaMatch(m,terminal,j,'center')).join('')+'</section>'+before.map((r,i)=>({r,i})).reverse().map(({r,i})=>lane(r,i,'right')).join('')+'</div></div>'+(isExample?'<p class="arena-note">Simulation du parcours à 4 équipes. Les équipes et le tirage seront annoncés après les inscriptions.</p>':'');
 function drawBracket(){
- const plane=board.querySelector('.bracket-board');
- const svg=board.querySelector('.bracket-lines');
- const bounds=plane.getBoundingClientRect();
- svg.setAttribute('viewBox','0 0 '+bounds.width+' '+bounds.height);
- if(window.matchMedia('(max-width: 700px)').matches){svg.innerHTML='';return;}
- svg.innerHTML=Array.from(board.querySelectorAll('[data-next]')).map(match=>{
-  const target=document.getElementById(match.dataset.next);
-  if(!target)return '';
-  const from=match.getBoundingClientRect(),to=target.getBoundingClientRect();
-  const x1=from.right-bounds.left,y1=from.top+from.height/2-bounds.top,x2=to.left-bounds.left,y2=to.top+to.height/2-bounds.top,middle=(x1+x2)/2;
-  return '<path d="M '+x1+' '+y1+' H '+middle+' V '+y2+' H '+x2+'"/><circle cx="'+x1+'" cy="'+y1+'" r="2.5"/>';
+ const stage=board.querySelector('.arena-stage'),svg=board.querySelector('.arena-wires');
+ const box=stage.getBoundingClientRect();svg.setAttribute('viewBox','0 0 '+box.width+' '+box.height);
+ if(window.matchMedia('(max-width: 760px)').matches){svg.innerHTML='';return;}
+ svg.innerHTML=Array.from(board.querySelectorAll('[data-next]')).map(m=>{
+  const target=document.getElementById(m.dataset.next);if(!target)return '';
+  const f=m.querySelector('.arena-pair').getBoundingClientRect(),t=target.getBoundingClientRect(),right=m.dataset.side==='right';
+  const x1=(right?f.left:f.right)-box.left,x2=(right?t.right:t.left)-box.left,y1=f.top+f.height/2-box.top,y2=t.top+t.height/2-box.top,middle=(x1+x2)/2;
+  return '<path class="'+m.dataset.side+'" d="M '+x1+' '+y1+' H '+middle+' V '+y2+' H '+x2+'"/>';
  }).join('');
 }
 new ResizeObserver(drawBracket).observe(board);
