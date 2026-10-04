@@ -119,3 +119,44 @@ board.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('c
  const target=side==='center'?board.querySelector('.arena-center'):Array.from(board.querySelectorAll('.arena-lane.'+side))[side==='right'?before.length-1:0];
  if(target)target.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest',inline:'center'});
 }));
+
+// Sur mobile, un tour et un côté à la fois, avec les mêmes matchs que sur ordinateur.
+const mobileMedia=window.matchMedia('(max-width: 760px)');
+const lanes=[...board.querySelectorAll('.arena-lane,.arena-center')];
+lanes.forEach(el=>{
+ const order=Number(el.style.getPropertyValue('--mobile-order'));
+ el.dataset.round=String(Math.floor(order/2));
+ el.dataset.branch=el.classList.contains('right')?'right':'left';
+});
+const mobilePanel=document.createElement('div');
+mobilePanel.className='mobile-bracket-controls';
+mobilePanel.innerHTML='<div class="mobile-branches" role="group" aria-label="Côté du tableau"><button type="button" data-branch="left">Côté A</button><button type="button" data-branch="right">Côté B</button></div><label for="mobile-round">Choisir un tour</label><div class="mobile-round-picker"><button type="button" data-step="-1" aria-label="Tour précédent">←</button><select id="mobile-round">'+numbered.map((r,i)=>'<option value="'+i+'">'+esc(r.name)+'</option>').join('')+'</select><button type="button" data-step="1" aria-label="Tour suivant">→</button></div><div class="mobile-progress" aria-hidden="true">'+numbered.map(()=>'<i></i>').join('')+'</div><p class="mobile-round-summary" aria-live="polite"></p><p class="mobile-round-help"></p>';
+board.querySelector('.arena-scroll').before(mobilePanel);
+let mobileRound=0,mobileBranch='left';
+function showMobileRound(){
+ lanes.forEach(el=>el.classList.toggle('mobile-active',Number(el.dataset.round)===mobileRound&&(mobileRound===terminal||el.dataset.branch===mobileBranch)));
+ mobilePanel.querySelector('select').value=String(mobileRound);
+ mobilePanel.querySelectorAll('[data-branch]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.branch===mobileBranch));b.disabled=mobileRound===terminal;});
+ mobilePanel.querySelector('[data-step="-1"]').disabled=mobileRound===0;
+ mobilePanel.querySelector('[data-step="1"]').disabled=mobileRound===terminal;
+ mobilePanel.querySelectorAll('.mobile-progress i').forEach((e,i)=>e.classList.toggle('current',i<=mobileRound));
+ const count=board.querySelector('.mobile-active')?.querySelectorAll('.arena-match').length||0;
+ mobilePanel.querySelector('.mobile-round-summary').textContent='Tour '+(mobileRound+1)+' / '+numbered.length+' · '+(mobileRound===terminal?'Les deux côtés se rencontrent':count+' match'+(count>1?'s':'')+' · Côté '+(mobileBranch==='left'?'A':'B'));
+ mobilePanel.querySelector('.mobile-round-help').textContent=mobileRound===terminal?'Le vainqueur remporte la RIFT CUP.':isExample&&mobileRound===0?'Les gagnants rejoignent les huitièmes. Les 12 autres équipes y entrent directement.':'Une victoire : tour suivant. Une défaite : élimination.';
+}
+mobilePanel.querySelector('select').addEventListener('change',e=>{mobileRound=Number(e.target.value);showMobileRound();});
+mobilePanel.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{mobileRound+=Number(b.dataset.step);showMobileRound();}));
+mobilePanel.querySelectorAll('[data-branch]').forEach(b=>b.addEventListener('click',()=>{mobileBranch=b.dataset.branch;showMobileRound();}));
+function revealMatch(id,focus=false){
+ const target=document.getElementById(id),lane=target?.closest('.arena-lane,.arena-center');
+ if(!lane)return;
+ mobileRound=Number(lane.dataset.round);mobileBranch=lane.dataset.branch;showMobileRound();
+ if(focus){target.focus({preventScroll:true});target.scrollIntoView({block:'center',behavior:'auto'});}
+}
+board.querySelectorAll('.arena-route').forEach(link=>link.addEventListener('click',e=>{
+ if(!mobileMedia.matches)return;
+ e.preventDefault();const id=link.hash.slice(1);history.pushState(null,'','#'+id);revealMatch(id,true);
+}));
+window.addEventListener('hashchange',()=>{if(mobileMedia.matches)revealMatch(location.hash.slice(1));});
+mobileMedia.addEventListener('change',()=>{if(mobileMedia.matches)revealMatch(location.hash.slice(1));drawBracket();});
+showMobileRound();if(mobileMedia.matches)revealMatch(location.hash.slice(1));

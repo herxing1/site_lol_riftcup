@@ -31,3 +31,19 @@
 .arena-stage .arena-lane-matches{min-height:710px;justify-content:space-around;gap:28px}.arena-stage .arena-team{font-size:.85rem;min-height:49px;padding:10px 12px}.arena-stage .arena-qualifier header{gap:5px;font-size:.7rem}.arena-stage .arena-qualifier header small{font-size:.65rem}.arena-stage .arena-final h3{font-size:2rem}.arena-stage .arena-route{font-size:.7rem}
 @media(max-width:760px){.arena-stage,.arena-stage:has(.arena-lane:nth-of-type(4)){width:auto;min-height:0;padding:30px 0;gap:38px}.arena-stage .arena-lane-matches{min-height:0;gap:26px}.arena-stage .arena-team{font-size:.95rem;min-height:56px}.arena-navigation{padding:0 0 18px;flex-wrap:wrap;gap:8px}.arena-navigation button{flex:1;padding:11px 10px}.arena-navigation>span{width:100%;margin:4px 0 0;font-size:.75rem}.arena-stage .arena-route{font-size:.8rem}.arena-scroll{background-image:linear-gradient(#060e13d4,#060e13eb),url('assets/fondlol4.webp');background-size:auto 100vh;background-repeat:repeat-y}.arena-lane>h3 small{display:inline;margin-left:15px}.arena-stage .arena-final h3{font-size:2.5rem}}
 @media(min-width:761px){#bracket{width:94vw;margin-left:calc(50% - 47vw);margin-right:calc(50% - 47vw)}}
+
+/* Lecture mobile guidée, sans dupliquer les rencontres. */
+.mobile-bracket-controls{display:none}
+@media(max-width:760px){
+ #arbre .section-heading{margin-bottom:18px}#arbre .format-summary{font-size:.8rem}
+ .arena-navigation{display:none}.arena-status{padding-bottom:16px}.arena-status>span:last-child{display:none}
+ .mobile-bracket-controls{display:block;padding:0 0 22px}.mobile-branches{display:flex;border-bottom:1px solid #c7ae7840;margin-bottom:20px;gap:0}
+ .mobile-branches button{flex:1;min-height:48px;border:0;border-bottom:2px solid transparent;background:transparent;color:#90a0a9;font-size:.95rem}.mobile-branches button[aria-pressed=true]{color:#d5e8ef;border-bottom-color:#8cbece;background:#11232c}.mobile-branches button[data-branch=right][aria-pressed=true]{color:#e1c5a6;border-bottom-color:#be9871;background:#271f1b}.mobile-branches button:disabled{opacity:.4}
+ .mobile-bracket-controls>label{display:block;font-size:.75rem;letter-spacing:1px;color:#aca48f;margin-bottom:9px}
+ .mobile-round-picker{display:grid;grid-template-columns:44px 1fr 44px;gap:8px}.mobile-round-picker button,.mobile-round-picker select{min-height:48px;border:1px solid #c7ae7845;background:#101d25;color:#ede1c7;border-radius:0;font:500 .95rem Inter,Arial,sans-serif}.mobile-round-picker select{width:100%;min-width:0;padding:0 10px}.mobile-round-picker button:disabled{opacity:.25;cursor:default}
+ .mobile-progress{display:flex;gap:5px;margin-top:15px}.mobile-progress i{height:2px;background:#29313a;flex:1}.mobile-progress i.current{background:#c7ae78}
+ .mobile-round-summary{margin-top:13px;color:#d6c297;font-size:.8rem;line-height:1.5}.mobile-round-help{margin-top:7px;color:#a9b3b7;font-size:.8rem;line-height:1.65}
+ .arena-stage .arena-lane,.arena-stage .arena-center{display:none}.arena-stage .mobile-active{display:block}.arena-stage{padding:20px 0 25px!important;gap:0!important}.arena-lane>h3{display:none}.arena-scroll{background:linear-gradient(#071119e8,#071119ed),url('assets/fondlol4.webp') center/cover no-repeat;border-bottom:0}.arena-stage .arena-lane-matches{gap:26px}
+ .arena-stage .arena-qualifier header{font-size:.8rem;margin-bottom:10px}.arena-stage .arena-qualifier header small{font-size:.7rem}.arena-stage .arena-team{font-size:.95rem;min-height:61px;background:#0b1c25d9}.arena-stage .right .arena-team{background:#211c19c9}
+ .arena-stage .arena-route{width:100%;padding:13px 11px;margin:0;background:#101e27;border:1px solid #627b8940;border-top:0;color:#cadce3;font-size:.82rem;line-height:1.5}.arena-stage .arena-route:after{content:' →';float:right;color:#c7ae78}.arena-stage .arena-center{padding:12px 0 0;margin:0;border:0}.arena-center:before{display:none}.arena-note{text-align:left;font-size:.75rem;line-height:1.7;padding-top:8px}
+}
