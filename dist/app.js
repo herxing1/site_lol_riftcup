@@ -21,7 +21,8 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<'
 const images=['rift-landscape','ionia-temple','ionia-waterfalls','rift-landscape'];
 const champions=['fiora','jayce','leona','senna'];
 const teams=config.teams.length?config.teams:Array.from({length:4},()=>({name:'Équipe à annoncer',players:[]}));
-text('#team-status',config.teams.length?`${config.teams.length} ÉQUIPES`:'ANNONCE À VENIR');
+text('#team-status',config.teams.length?`${config.teams.length} ÉQUIPE${config.teams.length>1?'S':''}`:'ANNONCE À VENIR');
+if(config.teams.length) text('#equipes .section-heading .muted', 'Découvrez les équipes inscrites et leurs joueurs.');
 const posterUrl = value => {
  if(typeof value !== 'string' || !value.trim()) return '';
  try { const url = new URL(value, window.location.href); return ['http:','https:'].includes(url.protocol)?url.href:''; } catch { return ''; }

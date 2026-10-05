@@ -6,7 +6,10 @@ window.RIFT_CONFIG = {
   description: 'Le BDE ATIDUT vous donne rendez-vous pour la RIFT CUP : un tournoi League of Legends en 5v5. Cinq joueurs, un Nexus à défendre et une victoire à aller chercher. Retrouvez ici les équipes et toutes les rencontres du tournoi.',
   practical: 'Inscrivez votre équipe via le formulaire. Le lieu et les autres informations pratiques seront annoncés prochainement.',
   registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSduJUFoFO_ggA7YLDADNrkm7wXz1CW1e1MmuDyvBOxJ8ThWAQ/viewform?usp=header',
-  teams: [],
+  teams: [{
+    name: 'longduzob',
+    players: ['Xeyio#EUW', 'BARON ZEPPELI#GRRR', 'Un0Toxic#1617', 'Agent Mossad#677', 'BoZ00#1234']
+  }],
   // Exemple d’équipe : { name: 'Les Poro', tag: 'POR', poster: 'assets/equipes/les-poro.jpg', players: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'] }
   // Affiche facultative : mettre l’image dans assets/equipes/, puis son chemin dans poster.
   // Une URL https:// vers une image est également acceptée. Sans poster, le paysage reste affiché.
