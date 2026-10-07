@@ -9,6 +9,9 @@ window.RIFT_CONFIG = {
   teams: [{
     name: 'longduzob',
     players: ['Xeyio#EUW', 'BARON ZEPPELI#GRRR', 'Un0Toxic#1617', 'Agent Mossad#677', 'BoZ00#1234']
+  }, {
+    name: 'Les Glaciers',
+    players: ['T1 Twisten#PERPI', 'BrancheTaZine#BTZ', 'Magic Monkey#NARA', 'Make You Scream#BABY', 'WinnieLourson#WWEAE']
   }],
   // Exemple d’équipe : { name: 'Les Poro', tag: 'POR', poster: 'assets/equipes/les-poro.jpg', players: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'] }
   // Affiche facultative : mettre l’image dans assets/equipes/, puis son chemin dans poster.
